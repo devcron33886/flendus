@@ -1,6 +1,19 @@
 <?php
 
-Route::redirect('/', '/login');
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+
+Route::get('/',[\App\Http\Controllers\PagesController::class,'welcome'])->name('welcome');
+Route::get('/classes/aerobics', [\App\Http\Controllers\PagesController::class,'aerobics'])->name('aerobics');
+Route::get('/classes/zumba', [\App\Http\Controllers\PagesController::class,'zumba'])->name('zumba');
+
+Route::post('/contact',[\App\Http\Controllers\ContactController::class,'store'])->name('contact.store');
+
+Route::get('/shop/products',[\App\Http\Controllers\ProductController::class,'products'])->name('products');
+Route::get('/shop/products/{product:name}',[\App\Http\Controllers\ProductController::class,'product'])->name('product');
+Route::post('/order',[\App\Http\Controllers\ProductController::class,'order'])->name('product.order');
+
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));

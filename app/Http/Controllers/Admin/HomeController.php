@@ -99,8 +99,8 @@ class HomeController
         }
 
         $settings4 = [
-            'chart_title'           => 'Total Contacts',
-            'chart_type'            => 'line',
+            'chart_title'           => 'Total Contact',
+            'chart_type'            => 'number_block',
             'report_type'           => 'group_by_date',
             'model'                 => 'App\Models\Contact',
             'group_by_field'        => 'created_at',
@@ -108,13 +108,32 @@ class HomeController
             'aggregate_function'    => 'count',
             'filter_field'          => 'created_at',
             'group_by_field_format' => 'Y-m-d H:i:s',
-            'column_class'          => 'col-md-3',
+            'column_class'          => 'col-md-4',
             'entries_number'        => '5',
             'translation_key'       => 'contact',
         ];
 
-        $chart4 = new LaravelChart($settings4);
+        $settings4['total_number'] = 0;
+        if (class_exists($settings4['model'])) {
+            $settings4['total_number'] = $settings4['model']::when(isset($settings4['filter_field']), function ($query) use ($settings4) {
+                if (isset($settings4['filter_days'])) {
+                    return $query->where($settings4['filter_field'], '>=',
+                now()->subDays($settings4['filter_days'])->format('Y-m-d'));
+                }
+                if (isset($settings4['filter_period'])) {
+                    switch ($settings4['filter_period']) {
+                case 'week': $start = date('Y-m-d', strtotime('last Monday')); break;
+                case 'month': $start = date('Y-m') . '-01'; break;
+                case 'year': $start = date('Y') . '-01-01'; break;
+            }
+                    if (isset($start)) {
+                        return $query->where($settings4['filter_field'], '>=', $start);
+                    }
+                }
+            })
+                ->{$settings4['aggregate_function'] ?? 'count'}($settings4['aggregate_field'] ?? '*');
+        }
 
-        return view('home', compact('chart1', 'chart4', 'settings2', 'settings3'));
+        return view('home', compact('chart1', 'settings4', 'settings2', 'settings3'));
     }
 }
