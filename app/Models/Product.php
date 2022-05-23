@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ class Product extends Model implements HasMedia
     use SoftDeletes;
     use InteractsWithMedia;
     use HasFactory;
+    use Sluggable;
 
     public const STATUS_RADIO = [
         '0' => 'Not Available',
@@ -65,6 +67,15 @@ class Product extends Model implements HasMedia
         }
 
         return $file;
+    }
+    public function sluggable(): array
+    {
+        return [
+            'slug'=>[
+                'source'=>'name'
+            ]
+
+        ];
     }
 
     protected function serializeDate(DateTimeInterface $date)

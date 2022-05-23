@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ class Category extends Model
 {
     use SoftDeletes;
     use HasFactory;
+    use Sluggable;
 
     public const VISIBILITY_RADIO = [
         '0' => 'Not Available',
@@ -34,6 +36,15 @@ class Category extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' =>[
+                'source'=>'title',
+            ]
+        ];
+    }
 
     protected function serializeDate(DateTimeInterface $date)
     {
