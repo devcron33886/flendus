@@ -66,10 +66,9 @@
                     <article class="gallery-wrap">
                         <div class="img-big-wrap img-thumbnail">
                             @if ($product->product_image)
-                            <a data-fslightbox="mygalley" data-type="image"
-                            href="/storage/{{ $product->featured_image }}">
+
                             <img height="560" src="{{ $product->product_image->getUrl('preview') }}" style="width: 100%;">
-                        </a>
+                        
                             @endif
 
                         </div>
